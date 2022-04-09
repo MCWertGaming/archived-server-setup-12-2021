@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  adguard:
+    image: adguard/adguardhome
+    container_name: adguard
+    restart: unless-stopped
+    ports: 
+    - 10.10.11.21:53:53/tcp     # Plain DNS
+    - 10.10.11.21:53:53/udp     # Plain DNS
+    #- 10.10.11.21:67:67/udp     # DHCP
+    #- 10.10.11.21:68:68/tcp     # DHCP
+    #- 10.10.11.21:68:68/udp     # DHCP
+    - 10.10.11.21:80:80/tcp     # re routing http to https
+    #- 10.10.11.21:443:443/tcp   # DNS over HTTPS
+    #- 10.10.11.21:443:443/udp   # DNS over HTTPS
+    - 10.10.11.21:3000:3000/tcp # Web interface
+    #- 10.10.11.21:853:853/tcp   # DNS over TLS
+    #- 10.10.11.21:784:784/udp   # DNS over Quick
+    #- 10.10.11.21:853:853/udp   # DNS over Quick
+    #- 10.10.11.21:8853:8853/udp # DNS over Quick
+    #- 10.10.11.21:5443:5443/tcp # DNSCrypt
+    #- 10.10.11.21:5443:5443/udp # DNSCrypt
+    volumes:
+      - adguard_conf:/opt/adguardhome/conf
+      - adguard_work:/opt/adguardhome/work
+
+volumes:
+  adguard_conf:
+    external: true
+  adguard_work:
+    external: true

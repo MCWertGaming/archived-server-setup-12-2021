@@ -1,0 +1,13 @@
+# commands for init step-ca
+
+docker pull smallstep/step-ca
+docker run -it -v step:/home/step smallstep/step-ca step ca init
+
+docker run -it -v step:/home/step smallstep/step-ca sh
+- vi /home/step/secrets/password
+- step ca provisioner remove stax --all
+- step ca provisioner add acme --type ACME
+
+>P)KZ&0{)&)l4LYgN<KJ[${]i8jPwHtS
+
+1ad37defac6655f31b069293c86a1e0d0b8213aa95b4d332675c4ca1beb1bcdd

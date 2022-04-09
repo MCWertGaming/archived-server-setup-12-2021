@@ -1,0 +1,144 @@
+version: '3'
+
+services:
+  step_ca:
+    image: smallstep/step-ca:latest
+    container_name: step_ca
+    restart: unless-stopped
+    volumes:
+      - step:/home/step:z
+      # needed for local host DNS
+      - /etc/hosts:/etc/hosts:z
+      # ports:
+      # just needed for testing
+      #- 9000:9000
+    environment:
+      - DOCKER_STEPCA_INIT_NAME=PurotoLab
+      - DOCKER_STEPCA_INIT_DNS_NAMES=step_ca
+      - DOCKER_STEPCA_INIT_PROVISIONER_NAME=stax
+      - DOCKER_STEPCA_INIT_SSH=yes
+      # - DOCKER_STEPCA_INIT_PASSWORD=secret
+    networks:
+      - ca_net
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    volumes:
+      - $PWD/Caddyfile:/etc/caddy/Caddyfile:z
+      - $PWD/root.cert:/root_ca.crt:z
+      #- $PWD/site:/srv
+      - caddy_data:/data:z
+      - caddy_config:/config:z
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - step_ca
+    networks:
+      - ca_net
+      - nexus_web_net
+      - gitea_web_net
+  nexus:
+    image: sonatype/nexus3:latest
+    container_name: nexus
+    restart: unless-stopped
+    volumes:
+      - nexus_data:/nexus-data:z
+    networks:
+      - nexus_web_net
+  keycloak_db:
+    image: postgres
+    container_name: keycloak_db
+    restart: unless-stopped
+    volumes:
+      - keycloak_db_data:/var/lib/postgresql/data:z
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    networks:
+      - keycloak_db_net
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    restart: unless-stopped
+    environment:
+      PROXY_ADDRESS_FORWARDING: "true"
+      DB_VENDOR: POSTGRES
+      DB_ADDR: keycloak_db
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: Pa55w0rd
+      # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
+      #JDBC_PARAMS: "ssl=true"
+      #ports:
+      #- 8085:8080
+    depends_on:
+      - keycloak_db
+    networks:
+      - keycloak_db_net
+      - keycloak_web_net
+  gitea:
+    container_name: gitea
+    image: gitea/gitea:latest
+    #build: gitea/
+    restart: unless-stopped
+    ports:
+      - 2000:2000
+    volumes:
+      - gitea_data:/data:z
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - SSH_PORT=2000
+      - SSH_LISTEN_PORT=2000
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=gitea_db:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=password
+    depends_on:
+      - gitea_db
+    networks:
+      - gitea_db_net
+      - gitea_web_net
+  gitea_db:
+    image: postgres:latest
+    container_name: gitea_db
+    restart: unless-stopped
+    volumes:
+      - gitea_db_data:/var/lib/postgresql/data:z
+    environment:
+      POSTGRES_DB: gitea
+      POSTGRES_USER: gitea
+      POSTGRES_PASSWORD: password
+    networks:
+      - gitea_db_net
+
+volumes:
+  step:
+    external: true
+  caddy_data:
+    external: true
+  caddy_config: null
+  nexus_data:
+    external: true
+  keycloak_db_data:
+    external: true
+  gitea_data:
+    external: true
+  gitea_db_data:
+    external: true
+
+
+networks:
+  keycloak_db_net: null
+  ca_net: null
+  keycloak_web_net: null
+  nexus_web_net: null
+  gitea_web_net:
+  gitea_db_net:

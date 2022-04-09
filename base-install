@@ -1,0 +1,26 @@
+# install stuff
+
+# init
+pacman-key --init
+pacman-key --populate archlinux
+echo "Server = https://nexus.lcl.leven.dev/repository/arch-proxy/\$repo/os/\$arch
+Server = https://mirror.mikrogravitation.org/archlinux/\$repo/os/\$arch
+Server = https://de.arch.mirror.kescher.at/\$repo/os/\$arch
+Server = https://mirrors.niyawe.de/archlinux/\$repo/os/\$arch
+Server = https://archlinux.thaller.ws/\$repo/os/\$arch
+Server = https://mirror.dogado.de/archlinux/\$repo/os/\$arch" > /etc/pacman.d/mirrorlist
+# trust root cert
+echo "-----BEGIN CERTIFICATE-----
+MIIBoDCCAUWgAwIBAgIQecj6/rmX51VLgm9hKpkqDjAKBggqhkjOPQQDAjAuMREw
+DwYDVQQKEwhsZXZlbmxhYjEZMBcGA1UEAxMQbGV2ZW5sYWIgUm9vdCBDQTAeFw0y
+MTEyMjMwMDAzMDZaFw0zMTEyMjEwMDAzMDZaMC4xETAPBgNVBAoTCGxldmVubGFi
+MRkwFwYDVQQDExBsZXZlbmxhYiBSb290IENBMFkwEwYHKoZIzj0CAQYIKoZIzj0D
+AQcDQgAECOXTNLUg8u5FcOvKjmoHeW/WLXRbR5HuOMSmsZZYdm8HlaEM7NkW4cGT
+wlQo+Y1mhoZl5ReLS/jirD6HGUBtLKNFMEMwDgYDVR0PAQH/BAQDAgEGMBIGA1Ud
+EwEB/wQIMAYBAf8CAQEwHQYDVR0OBBYEFMoOQ0Pn5I1UEbjwMh8k20VJYJE+MAoG
+CCqGSM49BAMCA0kAMEYCIQDGlmFlXoxZUKZyeuRy9LNhU2zRzfr2mh//67kbRu2v
+UQIhAPL2D3mcujG1D/KXse72EvDyBJE9xEPP/8a4P91B/2Az
+-----END CERTIFICATE-----" > root.cert
+trust anchor root.cert
+# update
+pacman -Syu

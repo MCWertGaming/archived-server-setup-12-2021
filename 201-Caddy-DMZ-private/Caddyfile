@@ -1,0 +1,34 @@
+{
+	email stax@lcl.leven.dev
+	acme_ca https://ca.lcl.leven.dev/acme/acme/directory
+	acme_ca_root /root_ca.crt
+	# step-ca is not supporting that
+	ocsp_stapling off
+}
+docker-linux.leven.dev {
+	reverse_proxy https://docker-linux.nexus.lcl.leven.dev {
+		transport http {
+			tls_insecure_skip_verify
+		}
+		header_up Host {http.reverse_proxy.upstream.hostport}
+		header_up X-Forwarded-Host {host}
+	}
+}
+docker-windows.leven.dev {
+	reverse_proxy https://docker-linux.nexus.lcl.leven.dev {
+		transport http {
+			tls_insecure_skip_verify
+		}
+		header_up Host {http.reverse_proxy.upstream.hostport}
+		header_up X-Forwarded-Host {host}
+	}
+}
+choco.leven.dev {
+	reverse_proxy https://docker-linux.nexus.lcl.leven.dev {
+		transport http {
+			tls_insecure_skip_verify
+		}
+		header_up Host {http.reverse_proxy.upstream.hostport}
+		header_up X-Forwarded-Host {host}
+	}
+}

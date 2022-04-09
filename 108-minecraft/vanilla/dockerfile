@@ -1,0 +1,12 @@
+FROM archlinux:latest
+
+RUN pacman -Syu jre-openjdk-headless --needed --noconfirm && echo -e "y\ny" | pacman -Scc
+
+COPY build/ /opt/minecraft
+
+COPY entrypoint.sh /opt/minecraft/entrypoint.sh
+COPY config/ /opt/minecraft/
+
+WORKDIR /opt/minecraft
+
+ENTRYPOINT [ "/opt/minecraft/entrypoint.sh" ]

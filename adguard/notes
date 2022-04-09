@@ -1,0 +1,6 @@
+// adguard server notes
+
+type: rockylinux
+core: 1
+ram: 512mb
+disk: 2G

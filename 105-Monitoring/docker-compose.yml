@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./root.cert:/root_ca.crt:ro
+      #- $PWD/site:/srv
+      - caddy_data:/data:rw
+      - caddy_config:/config:rw
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - prometheus_web_net
+      - grafana_web_net
+  grafana:
+    image: grafana/grafana:latest
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - grafana_web_net
+      - graf_prom_net
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - prometheus_conf:/etc/prometheus/
+      - prometheus_data:/prometheus/
+    networks:
+      - prometheus_web_net
+      - graf_prom_net
+
+volumes:
+  caddy_data:
+    external: true
+  caddy_config:
+  prometheus_data:
+    external: true
+  grafana_data:
+    external: true
+  prometheus_conf:
+    external: true
+
+networks:
+  prometheus_web_net:
+  grafana_web_net:
+  graf_prom_net:

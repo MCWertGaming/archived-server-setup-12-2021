@@ -1,0 +1,48 @@
+{
+	email master@leven.dev
+}
+sso.leven.dev {
+	reverse_proxy https://sso.lcl.leven.dev {
+		transport http {
+			tls_insecure_skip_verify
+		}
+		header_up Host {http.reverse_proxy.upstream.hostport}
+		header_up X-Forwarded-Host {host}
+	}
+}
+drone.leven.dev {
+	reverse_proxy https://drone.lcl.leven.dev {
+		transport http {
+			tls_insecure_skip_verify
+		}
+		header_up Host {http.reverse_proxy.upstream.hostport}
+		header_up X-Forwarded-Host {host}
+	}
+}
+gitea.leven.dev {
+	reverse_proxy https://gitea.lcl.leven.dev {
+		transport http {
+			tls_insecure_skip_verify
+		}
+		header_up Host {http.reverse_proxy.upstream.hostport}
+		header_up X-Forwarded-Host {host}
+	}
+}
+proxmox.leven.dev {
+	reverse_proxy https://proxmox.lcl.leven.dev {
+		transport http {
+			tls_insecure_skip_verify
+		}
+		header_up Host {http.reverse_proxy.upstream.hostport}
+		header_up X-Forwarded-Host {host}
+	}
+}
+nexus.leven.dev {
+	reverse_proxy https://nexus.lcl.leven.dev {
+		transport http {
+			tls_insecure_skip_verify
+		}
+		header_up Host {http.reverse_proxy.upstream.hostport}
+		header_up X-Forwarded-Host {host}
+	}
+}

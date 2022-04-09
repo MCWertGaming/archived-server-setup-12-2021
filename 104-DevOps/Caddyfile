@@ -1,0 +1,13 @@
+{
+	email stax@lcl.leven.dev
+	acme_ca https://ca.lcl.leven.dev/acme/acme/directory
+	acme_ca_root /root_ca.crt
+	# step-ca is not supporting that
+	ocsp_stapling off
+}
+gitea.lcl.leven.dev {
+	reverse_proxy http://gitea:3000
+}
+drone.lcl.leven.dev {
+	reverse_proxy http://drone:80
+}

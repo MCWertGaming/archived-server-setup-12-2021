@@ -1,0 +1,4 @@
+FROM drone/drone-runner-docker
+
+COPY root.cert /root.cert
+RUN cat /root.cert >> /etc/ssl/certs/ca-certificates.crt

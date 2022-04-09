@@ -1,0 +1,9 @@
+{
+    email hello@localhost.invalid
+    acme_ca https://ca.localhost:9000/acme/acme/directory
+    ocsp_stapling off
+}
+
+adguard.localhost {
+    reverse_proxy adguard:3000
+}

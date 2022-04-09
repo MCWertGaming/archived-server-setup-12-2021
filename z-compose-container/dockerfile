@@ -1,0 +1,9 @@
+FROM registry.access.redhat.com/ubi8-minimal:latest as builder
+
+RUN microdnf install wget \
+    && wget https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -O /docker-compose \
+    && chmod +x /docker-compose
+
+FROM registry.access.redhat.com/ubi8/ubi-micro:latest
+COPY --from=builder /docker-compose /usr/bin/docker-compose
+ENTRYPOINT [ "/usr/bin/docker-compose" ]

@@ -1,0 +1,14 @@
+[Unit]
+Description=docker-compose service
+Requires=docker.service
+After=docker.service
+
+[Service]
+ExecStartPre=-/usr/bin/docker stop <container>
+ExecStartPre=-/usr/bin/docker rm <container>
+ExecStartPre=-/usr/bin/docker pull <container>
+ExecStart=/usr/bin/docker run <container>
+ExecStop=/usr/bin/docker stop <container>
+
+[Install]
+WantedBy=multi-user.target

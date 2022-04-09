@@ -1,0 +1,68 @@
+version: "3"
+services:
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    privileged: true
+    command: --interval 30
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+      - '--path.rootfs=/host'
+    network_mode: host
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro,rslave'
+  step_ca:
+    image: smallstep/step-ca
+    container_name: step_ca
+    restart: unless-stopped
+    volumes:
+      - step:/home/step
+    environment:
+      - DOCKER_STEPCA_INIT_NAME=Leventest
+      - DOCKER_STEPCA_INIT_DNS_NAMES=localhost
+    ports:
+      - 9000:9000
+  caddy:
+    build: caddy
+    container_name: caddy
+    restart: unless-stopped
+    depends_on:
+      - step_ca
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - $PWD/Caddyfile:/etc/caddy/Caddyfile:z
+      #- $PWD/root.crt:/root_ca.crt:z
+      #- $PWD/site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+  adguard:
+    image: adguard/adguardhome
+    container_name: adguard
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:53:53/tcp
+      - 127.0.0.1:53:53/udp
+      - 3000:3000
+    volumes:
+      - adguard_conf:/opt/adguardhome/conf
+      - adguard_work:/opt/adguardhome/work
+
+volumes:
+  step:
+    external: true
+  caddy_data:
+    external: true
+  caddy_config:
+  adguard_work:
+    external: true
+  adguard_conf:
+    external: true

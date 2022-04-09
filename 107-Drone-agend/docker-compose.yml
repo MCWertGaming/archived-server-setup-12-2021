@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+    drone-runner-1:
+        container_name: drone-runner-1
+        image: docker-linux.nexus.lcl.leven.dev/infra/drone-agend:latest
+        environment:
+            - DRONE_RPC_HOST=drone.lcl.leven.dev
+            - DRONE_RPC_PROTO=https
+            - DRONE_RPC_SECRET=${DRONE_SECRET}
+            - DRONE_RUNNER_CAPACITY=2
+            - DRONE_RUNNER_NAME=runner-1
+        ports:
+            - "3000:3000"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        restart: unless-stopped

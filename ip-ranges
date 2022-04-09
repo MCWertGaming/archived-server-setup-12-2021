@@ -1,0 +1,36 @@
+// ip ranges
+
+1-18 - preserved
+
+19-99 - Linux
+
+100-199 - Windows
+
+
+// linux server (10.10.11.XXX)
+pve - 19 - proxmox     done, TODO (watchtower, git)
+100 - 20 - CA          done, TODO (watchtower, git)
+101 - 21 - DNS         done, TODO (watchtower, git, TLS)
+102 - 22 - nexus       done, TODO (watchtower, git, rh registry)
+103 - 23 - keycloak    done, TODO (watchtower, git)
+105 - 25 - devops      working
+106 - 26 - monitoring
+107 - 27 - status
+
+// DMZ (10.10.10.XXX)
+200 - 19 - DMZ caddy   done, TODO (watchtower, integrity, git, bulletproof container)
+
+// other todo
+- caddy metrics
+- proxmox metrics
+- lxc metrics
+- step-ca metrics
+- adguard metrics
+- nexus metrics
+- keycloak metrics
+- gitea metrics
+- drone metrics
+- prometheus / grafana metrics
+- all in one updater
+- change keycloak admin user pass
+- change gitea admin user pass

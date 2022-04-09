@@ -1,0 +1,6 @@
+// cockpit server notes
+
+base: rocky-linux
+cores: 1
+ram: 512mb
+disk: 2G

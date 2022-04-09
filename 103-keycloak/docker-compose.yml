@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./root.cert:/root_ca.crt:ro
+      #- $PWD/site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - keycloak_web_net
+  keycloak_db:
+    image: postgres:latest
+    container_name: keycloak_db
+    restart: unless-stopped
+    volumes:
+      - keycloak_db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: ${POSTGRES_PASS}
+    networks:
+      - keycloak_db_net
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    restart: unless-stopped
+    environment:
+      PROXY_ADDRESS_FORWARDING: "true"
+      DB_VENDOR: POSTGRES
+      DB_ADDR: keycloak_db
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: ${POSTGRES_PASS}
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASS}
+    depends_on:
+      - keycloak_db
+    networks:
+      - keycloak_db_net
+      - keycloak_web_net
+    command: start-dev
+
+volumes:
+  keycloak_db_data:
+    external: true
+  caddy_data:
+    external: true
+  caddy_config:
+networks:
+  keycloak_web_net:
+  keycloak_db_net:

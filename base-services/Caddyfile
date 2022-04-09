@@ -1,0 +1,20 @@
+{
+    email stax@lcl.leven.dev
+    acme_ca https://step_ca:9000/acme/acme/directory
+    acme_ca_root /root_ca.crt
+    # step-ca is not supporting that
+    ocsp_stapling off
+}
+# ca - must have trusted root cert
+#ca.lcl.leven.dev {
+#    reverse_proxy https://step_ca:9000
+#}
+nexus.lcl.leven.dev {
+    reverse_proxy http://nexus:8081
+}
+sso.lcl.leven.dev {
+    reverse_proxy http://keycloak:8080
+}
+gitea.lcl.leven.dev {
+    reverse_proxy http://gitea:3000
+}

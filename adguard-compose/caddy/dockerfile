@@ -1,0 +1,5 @@
+FROM caddy
+
+RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
+COPY ./root.crt /usr/local/share/ca-certificates/step.crt
+RUN update-ca-certificates

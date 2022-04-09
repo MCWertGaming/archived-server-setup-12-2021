@@ -1,0 +1,13 @@
+{
+	email stax@lcl.leven.dev
+	acme_ca https://ca.lcl.leven.dev/acme/acme/directory
+	acme_ca_root /root_ca.crt
+	# step-ca is not supporting that
+	ocsp_stapling off
+}
+prometheus.lcl.leven.dev {
+	reverse_proxy http://prometheus:9090
+}
+grafana.lcl.leven.dev {
+	reverse_proxy http://grafana:3000
+}
